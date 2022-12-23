@@ -3,6 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import Home from './components/Home';
 import ListaVendas from './components/ListaVendas';
 import NovaVenda from './components/NovaVenda';
+import InsereProdutos from './components/InsereProdutos';
 
 const MyTheme = {
   ...DefaultTheme,
@@ -18,9 +19,10 @@ export default function App() {
   return (
       <NavigationContainer theme={MyTheme}>
         <Stack.Navigator>
-          <Stack.Screen name="Início" component={Home} />
+           <Stack.Screen name="Início" component={Home} />
           <Stack.Screen name="Lista Vendas" component={ListaVendas} />
           <Stack.Screen name="Nova Venda" component={NovaVenda} />
+          <Stack.Screen name="Produtos" component={InsereProdutos} />
         </Stack.Navigator>
       </NavigationContainer>
   );

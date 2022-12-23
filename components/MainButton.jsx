@@ -3,10 +3,11 @@ import React, { Component } from 'react'
 
 export default (props) => {
     return (
-        <View style={ props.bgStyle}>
-            <Button color={props.color ?? 'black'} 
-            title={props.title ?? ''}
-            onPress={props.onPress}/>
+        <View style={props.bgStyle}>
+            <Button  color={props.color ?? 'black'}
+                title={props.title ?? ''}
+                onPress={props.onPress}
+                ref={props.refItem ?? null} />
         </View>
-      )
+    )
 }
