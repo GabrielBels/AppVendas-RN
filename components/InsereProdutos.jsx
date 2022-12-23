@@ -25,12 +25,10 @@ export default ({ route, navigation }) => {
     }, [listaProdutos]);
 
     function atualizaValorFinal() {
-        console.log(listaProdutos)
         const vlrTotal = listaProdutos.reduce((prev, curr) => {
             return prev += curr.valorTotal;
         }, 0);
 
-        console.log(vlrTotal);
         setValorCarrinho(vlrTotal);
     }
 
