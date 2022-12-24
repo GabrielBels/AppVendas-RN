@@ -5,6 +5,7 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import NumericInput from 'react-native-numeric-input'
 import MainButton from './MainButton';
 
+const urlApi = "http://191.101.235.83:8001/"
 
 export default ({ navigation }) => {
     const [nomeCliente, setNomeCliente] = useState('');
@@ -36,6 +37,19 @@ export default ({ navigation }) => {
 
         setBtnNextPageEnabled(enableButton);
 
+    }
+
+    function salvarCliente() {
+        return new Promise((resolve, reject) => {
+
+            fetch(urlApi + `GetCadastraCliente?nomeCliente=${nomeCliente}`)
+            .then(response => response.json())
+            .then((result) => {
+                resolve(result);
+            }).catch((error) => {
+                reject(error);
+            })
+        });
     }
 
 
@@ -122,13 +136,20 @@ export default ({ navigation }) => {
                                 return;
                             }
 
-                            navigation.navigate('Produtos',
-                                {
-                                    nomeCliente: nomeCliente,
-                                    dataVenda: dataVenda.getTime(),
-                                    formaPagto: formaPagto,
-                                    numParcelas: qtdParcelas
-                                })
+                            // Salvar cliente 
+                            salvarCliente().then((resultado) => {
+                                console.log(resultado.data[0].CodCliente)
+                                navigation.navigate('Produtos',
+                                    {
+                                        codCliente: resultado.data[0].CodCliente,
+                                        nomeCliente: nomeCliente,
+                                        dataVenda: dataVenda.getTime(),
+                                        formaPagto: formaPagto,
+                                        numParcelas: qtdParcelas
+                                    })
+                            }).catch((error) => {
+                                Alert.alert("Erro ao salvar cliente: " + error);
+                            })
                         }} />
                 </View>
             </ScrollView>

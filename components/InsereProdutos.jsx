@@ -7,12 +7,17 @@ import CurrencyInput from 'react-native-currency-input';
 
 import styles from './Styles'
 
+const urlApi = "http://191.101.235.83:8001/"
+
 export default ({ route, navigation }) => {
     const [currProdutoNome, setCurrProdutoNome] = useState("");
     const [currProdutoQtde, setCurrProdutoQtde] = useState(1);
     const [currProdutoValor, setCurrProdutoValor] = useState(0);
     const [listaProdutos, setListaProdutos] = useState([]);
     const [valorCarrinho, setValorCarrinho] = useState(0);
+
+    const { codCliente, dataVenda,
+        formaPagto, numParcelas } = route.params;
 
     const btnFinalizar = useRef(null);
 
@@ -30,6 +35,34 @@ export default ({ route, navigation }) => {
         }, 0);
 
         setValorCarrinho(vlrTotal);
+    }
+
+    function finalizarVenda() {
+        return new Promise((resolve, reject) => {
+            const vendaObj = {
+                "codCliente": codCliente,
+                "dataVenda": dataVenda,
+                "formaPagamento": formaPagto,
+                "numParcelas": numParcelas,
+                "valorTotal": valorCarrinho,
+                "listaProdutos":  listaProdutos
+            };
+
+            fetch(urlApi + `Venda`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(vendaObj)
+            })
+                .then(response => response.json())
+                .then((result) => {
+                    resolve(result);
+                }).catch((error) => {
+                    reject(error);
+                })
+        });
     }
 
     return (
@@ -97,9 +130,17 @@ export default ({ route, navigation }) => {
                             color='white'
                             title={`Finalizar (R$ ${valorCarrinho.toLocaleString("pt-BR")})`}
                             onPress={() => {
-                                Alert.alert('Enviando para db...');
+                                finalizarVenda().then((resultado) => {
+                                    console.log(resultado);
 
-                                navigation.navigate('Início', { name: 'Início' })
+                                    if (!resultado.sucess)
+                                        throw resultado.message;
+
+                                    navigation.navigate('Início', { name: 'Início' })
+                                }).catch((ex) => {
+                                    console.log(ex);
+                                    Alert.alert("Erro ao salvar venda: " + ex)
+                                });
                             }}
                         />
                     </View>

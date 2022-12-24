@@ -19,10 +19,10 @@ export default function App() {
   return (
       <NavigationContainer theme={MyTheme}>
         <Stack.Navigator>
-           <Stack.Screen name="Início" component={Home} />
+           {/* <Stack.Screen name="Início" component={Home} /> */}
           <Stack.Screen name="Lista Vendas" component={ListaVendas} />
-          <Stack.Screen name="Nova Venda" component={NovaVenda} />
-          <Stack.Screen name="Produtos" component={InsereProdutos} />
+          {/* <Stack.Screen name="Nova Venda" component={NovaVenda} />
+          <Stack.Screen name="Produtos" component={InsereProdutos} /> */}
         </Stack.Navigator>
       </NavigationContainer>
   );
