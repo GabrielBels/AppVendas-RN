@@ -1,20 +1,67 @@
-import { View, TouchableWithoutFeedback, Text, TextInput, StyleSheet, Keyboard, Alert, ScrollView } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import { View, TouchableWithoutFeedback, Text, TextInput, StyleSheet, Keyboard, Alert, ScrollView, TouchableHighlight } from 'react-native'
+import React, { useEffect, useContext, useState } from 'react'
 import { DataTable } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import styles from './Styles';
 import MainButton from './MainButton';
 
-const data30Dias = new Date();
+import { Context } from './ContextProvider';
 
-data30Dias.setDate(data30Dias.getDate() + 30);
+const data30Dias = new Date();
+data30Dias.setDate(data30Dias.getDate() + 20);
+data30Dias.setHours(23, 59, 59);
+
+const dataAtual = new Date();
+dataAtual.setDate(dataAtual.getDate() - 10);
+dataAtual.setHours(0,0,0);
 
 export default ({ navigation }) => {
-    const [dataInicioFiltro, setDataInicioFiltro] = useState(new Date());
+    const [dataInicioFiltro, setDataInicioFiltro] = useState(dataAtual);
     const [dataFimFiltro, setDataFimFiltro] = useState(data30Dias);
+    const [nomeClienteBuscado, setNomeClienteBuscado] = useState("");
     const [listaVendas, setListaVendas] = useState([]);
+    const [valorTotalRetornado, setValorTotalRetornado] = useState(0);
 
+    const { urlApi } = useContext(Context);
 
+    useEffect(() => {
+        getVendas(dataInicioFiltro.getTime(), dataFimFiltro.getTime());
+    }, []);
+
+    useEffect(() => {
+        
+        if (!listaVendas || listaVendas.length == 0) {
+            setValorTotalRetornado(0);
+            return;
+        }
+
+        const valorTotal = listaVendas.reduce((acc, curr) => {
+            acc += curr.ValorTotalVenda ?? 0;
+            return acc;
+        }, 0);
+
+        setValorTotalRetornado(valorTotal);
+    }, [listaVendas])
+
+    function getVendas(dataInicio, dataFim, nomeCliente) {
+        const baseUrl = `${urlApi}Venda?`;
+
+        let urlParams = [];
+
+        if (dataInicio) urlParams.push(`dataInicio=${dataInicio}`);
+        if (dataFim) urlParams.push(`dataFim=${dataFim}`);
+        if (nomeCliente) urlParams.push(`nomeCliente=${nomeCliente}`);
+
+        console.log(baseUrl + urlParams.join("&"))
+        fetch(baseUrl + urlParams.join("&"))
+            .then(result => result.json())
+            .then((result) => {
+                setListaVendas(result["data"]);
+            })
+            .catch((error) => {
+                Alert.alert("Erro ao consultar as vendas: " + error)
+            });
+    }
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -56,15 +103,29 @@ export default ({ navigation }) => {
                         }}
                             placeholder='Nome do cliente'
                             onChangeText={(e) => {
-                                setCurrProdutoNome(e);
+                                setNomeClienteBuscado(e);
                             }}></TextInput>
                     </View>
 
                     <MainButton title='Pesquisar' bgStyle={{
                         ...styles.mainButton,
                         alignSelf: 'center'
-                    }} color='white' />
+                    }}
+                        onPress={() => {
+                            const dataInicioDia = new Date(dataInicioFiltro.getFullYear(), dataInicioFiltro.getMonth(), dataInicioFiltro.getDate(), 0, 0, 0);
+                            const dataFimDia = new Date(dataFimFiltro.getFullYear(), dataFimFiltro.getMonth(), dataFimFiltro.getDate(), 23, 59, 59);
 
+                            getVendas(dataInicioDia.getTime(), dataFimDia.getTime(), nomeClienteBuscado)
+                        }}
+                        color='white' />
+
+                    <View style={{
+                        ...stylesListaVenda.container,
+                        flexDirection: 'column'
+                    }}>
+                        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Total: R$ {valorTotalRetornado}</Text>
+                      
+                    </View>
 
                     <DataTable style={{ marginTop: 30 }}>
                         <DataTable.Header>
@@ -74,22 +135,30 @@ export default ({ navigation }) => {
                             <DataTable.Title style={{ justifyContent: 'center' }}>Ação</DataTable.Title>
                         </DataTable.Header>
                         {listaVendas.map((el, i) => {
+                            const dataVenda = new Date(parseInt(el.DataVenda));
+
                             return (
-                                <DataTable.Row style={{ marginTop: 10 }} key={el.CodVenda}>
-                                    <DataTable.Cell style={styles.centralized}>{el.DataVenda}</DataTable.Cell>
-                                    <DataTable.Cell style={styles.centralized}>{el.CodCliente}</DataTable.Cell>
-                                    <DataTable.Cell style={styles.centralized}>{0.00}</DataTable.Cell>
-                                    <DataTable.Cell style={styles.centralized}>
-                                        Açao
-                                    </DataTable.Cell>
-                                </DataTable.Row>
+                                <TouchableHighlight key={el.CodVenda}
+                                    onPress={() => {
+
+                                        navigation.navigate('Detalhes Venda', {
+                                            name: 'Detalhes Venda',
+                                            codVenda: el.CodVenda
+                                        })
+                                    }}>
+                                    <DataTable.Row style={{ marginTop: 10 }} >
+                                        <DataTable.Cell style={styles.centralized}>{dataVenda.toLocaleDateString("pt-BR")}</DataTable.Cell>
+                                        <DataTable.Cell style={styles.centralized}>{el.Nome}</DataTable.Cell>
+                                        <DataTable.Cell style={styles.centralized}>{el.ValorTotalVenda}</DataTable.Cell>
+                                    </DataTable.Row>
+                                </TouchableHighlight>
                             );
                         })}
                     </DataTable>
                 </View>
             </ScrollView>
         </TouchableWithoutFeedback>
-    )
+    );
 }
 
 const stylesListaVenda = StyleSheet.create({
@@ -106,4 +175,7 @@ const stylesListaVenda = StyleSheet.create({
         fontSize: 17,
         width: 300
     },
+    fontSize: {
+        fontSize: 100
+    }
 });

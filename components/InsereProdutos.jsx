@@ -1,5 +1,5 @@
 import { View, TouchableWithoutFeedback, Text, TextInput, StyleSheet, Keyboard, Alert, ScrollView } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useContext, useState } from 'react'
 import NumericInput from 'react-native-numeric-input'
 import MainButton from './MainButton'
 import { DataTable } from 'react-native-paper';
@@ -7,7 +7,7 @@ import CurrencyInput from 'react-native-currency-input';
 
 import styles from './Styles'
 
-const urlApi = "http://191.101.235.83:8001/"
+import Context from './ContextProvider';
 
 export default ({ route, navigation }) => {
     const [currProdutoNome, setCurrProdutoNome] = useState("");
@@ -15,6 +15,7 @@ export default ({ route, navigation }) => {
     const [currProdutoValor, setCurrProdutoValor] = useState(0);
     const [listaProdutos, setListaProdutos] = useState([]);
     const [valorCarrinho, setValorCarrinho] = useState(0);
+    const {urlApi} = useContext(Context);
 
     const { codCliente, dataVenda,
         formaPagto, numParcelas } = route.params;
@@ -111,7 +112,7 @@ export default ({ route, navigation }) => {
                                 }
 
                                 setListaProdutos(ev => [...ev, {
-                                    nome: currProdutoNome,
+                                    nome: (currProdutoNome ?? "").trim(),
                                     qtd: currProdutoQtde,
                                     valorUnitario: currProdutoValor,
                                     valorTotal: currProdutoQtde * currProdutoValor
@@ -131,14 +132,11 @@ export default ({ route, navigation }) => {
                             title={`Finalizar (R$ ${valorCarrinho.toLocaleString("pt-BR")})`}
                             onPress={() => {
                                 finalizarVenda().then((resultado) => {
-                                    console.log(resultado);
-
                                     if (!resultado.sucess)
                                         throw resultado.message;
 
-                                    navigation.navigate('Início', { name: 'Início' })
+                                    navigation.navigate('Início', { name: 'Início' });
                                 }).catch((ex) => {
-                                    console.log(ex);
                                     Alert.alert("Erro ao salvar venda: " + ex)
                                 });
                             }}

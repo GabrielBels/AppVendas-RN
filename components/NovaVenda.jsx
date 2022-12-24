@@ -1,11 +1,12 @@
 import { View, Text, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert, ScrollView } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { SelectList } from 'react-native-dropdown-select-list';
 import NumericInput from 'react-native-numeric-input'
 import MainButton from './MainButton';
 
-const urlApi = "http://191.101.235.83:8001/"
+import Context from './ContextProvider';
+
 
 export default ({ navigation }) => {
     const [nomeCliente, setNomeCliente] = useState('');
@@ -14,6 +15,7 @@ export default ({ navigation }) => {
     const [qtdParcelas, setQtdParcelas] = useState(1);
     const [btnNextPageEnabled, setBtnNextPageEnabled] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const {urlApi} = useContext(Context);
 
     const formasPagto = [
         { key: "fiado", value: "À Prazo" },
@@ -42,7 +44,7 @@ export default ({ navigation }) => {
     function salvarCliente() {
         return new Promise((resolve, reject) => {
 
-            fetch(urlApi + `GetCadastraCliente?nomeCliente=${nomeCliente}`)
+            fetch(urlApi + `GetCadastraCliente?nomeCliente=${(nomeCliente ?? "").trim()}`)
             .then(response => response.json())
             .then((result) => {
                 resolve(result);
@@ -138,7 +140,6 @@ export default ({ navigation }) => {
 
                             // Salvar cliente 
                             salvarCliente().then((resultado) => {
-                                console.log(resultado.data[0].CodCliente)
                                 navigation.navigate('Produtos',
                                     {
                                         codCliente: resultado.data[0].CodCliente,
@@ -163,6 +164,9 @@ const styleNovaVenda = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#fff',
+    },
+    marginTop: {
+        marginTop: 20
     },
     bottomButton: {
         width: 350,
@@ -198,8 +202,5 @@ const styleNovaVenda = StyleSheet.create({
         minHeight: 100,
 
         width: '70%'
-    },
-    marginTop: {
-        marginTop: 20
     }
 });
