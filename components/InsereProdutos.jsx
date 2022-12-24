@@ -7,7 +7,7 @@ import CurrencyInput from 'react-native-currency-input';
 
 import styles from './Styles'
 
-import Context from './ContextProvider';
+import {Context} from './ContextProvider';
 
 export default ({ route, navigation }) => {
     const [currProdutoNome, setCurrProdutoNome] = useState("");

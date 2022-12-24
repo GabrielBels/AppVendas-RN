@@ -5,7 +5,7 @@ import { SelectList } from 'react-native-dropdown-select-list';
 import NumericInput from 'react-native-numeric-input'
 import MainButton from './MainButton';
 
-import Context from './ContextProvider';
+import { Context } from './ContextProvider';
 
 
 export default ({ navigation }) => {
@@ -15,7 +15,7 @@ export default ({ navigation }) => {
     const [qtdParcelas, setQtdParcelas] = useState(1);
     const [btnNextPageEnabled, setBtnNextPageEnabled] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
-    const {urlApi} = useContext(Context);
+    const { urlApi } = useContext(Context);
 
     const formasPagto = [
         { key: "fiado", value: "À Prazo" },
@@ -45,12 +45,12 @@ export default ({ navigation }) => {
         return new Promise((resolve, reject) => {
 
             fetch(urlApi + `GetCadastraCliente?nomeCliente=${(nomeCliente ?? "").trim()}`)
-            .then(response => response.json())
-            .then((result) => {
-                resolve(result);
-            }).catch((error) => {
-                reject(error);
-            })
+                .then(response => response.json())
+                .then((result) => {
+                    resolve(result);
+                }).catch((error) => {
+                    reject(error);
+                })
         });
     }
 
