@@ -4,11 +4,14 @@ import React, { useContext } from 'react'
 import styles from './Styles'
 import MainButton from './MainButton';
 
+import { Context } from './ContextProvider';
+
 export default ({ navigation }) => {
+    const {empresaNome} = useContext(Context);
 
     return (<>
             <View style={styles.header}>
-                <Text style={styles.headerTitle}>Empresa</Text>
+                <Text style={styles.headerTitle}>{empresaNome}</Text>
             </View>
             <View style={styles.container}>
                 <MainButton bgStyle={styles.mainButton} color='white'
