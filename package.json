@@ -2,6 +2,10 @@
   "name": "appvendas",
   "version": "1.0.0",
   "main": "node_modules/expo/AppEntry.js",
+  "platforms":[
+    "ios",
+    "android"
+  ],
   "scripts": {
     "start": "expo start",
     "android": "expo start --android",
@@ -26,5 +30,12 @@
   "devDependencies": {
     "@babel/core": "^7.12.9"
   },
-  "private": true
+  "private": true,
+  "ios": {
+    "bundleIdentifier":"com.gabeltech.appvendas",
+    "supportsTablet":true 
+  },
+  "android":{
+    "package": "com.gabeltech.appvendas"
+  }
 }
