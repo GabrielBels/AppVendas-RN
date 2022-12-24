@@ -40,7 +40,7 @@ export default ({ navigation }) => {
             return acc;
         }, 0);
 
-        setValorTotalRetornado(valorTotal);
+        setValorTotalRetornado(valorTotal.toFixed(2));
     }, [listaVendas])
 
     function getVendas(dataInicio, dataFim, nomeCliente) {
@@ -52,7 +52,6 @@ export default ({ navigation }) => {
         if (dataFim) urlParams.push(`dataFim=${dataFim}`);
         if (nomeCliente) urlParams.push(`nomeCliente=${nomeCliente}`);
 
-        console.log(baseUrl + urlParams.join("&"))
         fetch(baseUrl + urlParams.join("&"))
             .then(result => result.json())
             .then((result) => {
@@ -149,7 +148,7 @@ export default ({ navigation }) => {
                                     <DataTable.Row style={{ marginTop: 10 }} >
                                         <DataTable.Cell style={styles.centralized}>{dataVenda.toLocaleDateString("pt-BR")}</DataTable.Cell>
                                         <DataTable.Cell style={styles.centralized}>{el.Nome}</DataTable.Cell>
-                                        <DataTable.Cell style={styles.centralized}>{el.ValorTotalVenda}</DataTable.Cell>
+                                        <DataTable.Cell style={styles.centralized}>{parseFloat(el.ValorTotalVenda).toFixed(2)}</DataTable.Cell>
                                     </DataTable.Row>
                                 </TouchableHighlight>
                             );

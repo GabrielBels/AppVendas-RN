@@ -35,7 +35,7 @@ export default ({ route, navigation }) => {
             return prev += curr.valorTotal;
         }, 0);
 
-        setValorCarrinho(vlrTotal);
+        setValorCarrinho(vlrTotal.toFixed(2));
     }
 
     function finalizarVenda() {
@@ -87,7 +87,7 @@ export default ({ route, navigation }) => {
 
                     <CurrencyInput style={styleInsereProdutos.txtInput}
                         value={currProdutoValor}
-                        onChangeValue={(e) => setCurrProdutoValor(e)}
+                        onChangeValue={(e) => setCurrProdutoValor(e.toFixed(2))}
                         placeholder='Ex: 129,90' />
 
                     <Text style={styleInsereProdutos.txtLabel}>Quantidade:</Text>
