@@ -8,6 +8,7 @@ import { Context } from './ContextProvider';
 export default ({ route, navigation }) => {
     const [dadosVenda, setDadosVenda] = useState([]);
     const [listaProdutos, setListaProdutos] = useState([]);
+    const [valorTotal, setValorTotal] = useState(0);
     const { urlApi } = useContext(Context);
     const { codVenda } = route.params;
 
@@ -25,6 +26,12 @@ export default ({ route, navigation }) => {
                 Alert.alert("Erro ao consultar as vendas: " + error)
             })
     }, []);
+
+    useEffect(() => {
+        const valorTotalCarrinho = listaProdutos.reduce((acc, curr) =>acc += curr.ValorTotal, 0);
+
+        setValorTotal(valorTotalCarrinho.toFixed(2));
+    }, [listaProdutos])
 
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -79,6 +86,8 @@ export default ({ route, navigation }) => {
                                 {dadosVenda.FormaPagto}
                             </Text>
                         </View>
+
+
                         <View style={{ marginLeft: 20 }}>
                             <Text style={{
                                 ...stylesDetalhesVenda.txtLabel
@@ -87,6 +96,24 @@ export default ({ route, navigation }) => {
                                     Nro. Parcelas:&nbsp;
                                 </Text>
                                 {dadosVenda.QtdParcelas}
+                            </Text>
+                        </View>
+                    </View>
+
+                    <View style={{
+                        ...stylesDetalhesVenda.container,
+                        alignSelf: 'center',
+                        justifyContent: 'center',
+                        ...stylesDetalhesVenda.marginTop
+                    }}>
+                        <View >
+                            <Text style={{
+                                ...stylesDetalhesVenda.txtLabel
+                            }}>
+                                <Text style={{ fontWeight: 'bold' }}>
+                                    Valor Total:&nbsp;
+                                </Text>
+                                R$ {valorTotal}
                             </Text>
                         </View>
                     </View>

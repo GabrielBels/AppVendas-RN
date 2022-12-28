@@ -20,7 +20,7 @@ export default ({ navigation }) => {
             </View>
 
             <View style={{ ...styles.centralized, backgroundColor: 'white' }}>
-                <MainButton bgStyle={styles.bottomButton} 
+                <MainButton bgStyle={{...styles.mainButton, marginBottom: 40}} 
                     title='Nova Venda'
                     onPress={() => navigation.navigate('Nova Venda', { name: 'Nova Venda' })}/>
             </View>

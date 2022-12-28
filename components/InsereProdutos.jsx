@@ -20,8 +20,6 @@ export default ({ route, navigation }) => {
     const { codCliente, dataVenda,
         formaPagto, numParcelas } = route.params;
 
-    const btnFinalizar = useRef(null);
-
     useEffect(() => {
         atualizaValorFinal();
 
@@ -127,8 +125,6 @@ export default ({ route, navigation }) => {
                             ...styles.mainButton,
                             backgroundColor: 'darkgreen'
                         }}
-                            refItem={btnFinalizar}
-                            
                             title={`Finalizar (R$ ${valorCarrinho.toLocaleString("pt-BR")})`}
                             onPress={() => {
                                 finalizarVenda().then((resultado) => {
@@ -175,7 +171,11 @@ export default ({ route, navigation }) => {
 
 const styleInsereProdutos = StyleSheet.create({
     btnDeleteProduto: {
-        backgroundColor: 'darkred'
+        backgroundColor: 'darkred',
+        height: 40,
+        width: 70,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     txtInput: {
         borderWidth: 0,

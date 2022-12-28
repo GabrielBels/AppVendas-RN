@@ -45,12 +45,14 @@ export default ({ navigation }) => {
 
     function salvarCliente() {
         return new Promise((resolve, reject) => {
-
+            // console.log('Envia requisição salvarCliente');
             fetch(urlApi + `GetCadastraCliente?nomeCliente=${(nomeCliente ?? "").trim()}`)
-                .then(response => response.json())
-                .then((result) => {
+            .then(response => response.json())
+            .then((result) => {
+                    // console.log(result);
                     resolve(result);
                 }).catch((error) => {
+                    // console.log(error);
                     reject(error);
                 })
         });
@@ -90,7 +92,7 @@ export default ({ navigation }) => {
                             onPressIn={() => {
                                 setShowDatePicker(true);
                             }}>
-                            {dataVenda.toLocaleDateString("pt-BR")}</TextInput>
+                            {`${dataVenda.getDate().toString().padStart(2, '0')}/${(dataVenda.getMonth() + 1).toString().padStart(2, '0')}/${dataVenda.getFullYear()}`}</TextInput>
 
                         {showDatePicker && (
                             <DateTimePicker mode='date'
@@ -133,7 +135,6 @@ export default ({ navigation }) => {
                     <View style={{ ...styleNovaVenda.containerNewVenda, marginTop: 20 }}>
                         <NumericInput
                             rounded={true}
-                            onLimitReached={() => Alert.alert('Quantidade máxima de parcelas: 12')}
                             minValue={1}
                             maxValue={12}
                             initValue={qtdParcelas}
@@ -147,11 +148,11 @@ export default ({ navigation }) => {
                     }}
                         title='Próxima Página'
                         onPress={() => {
-
                             if (!nomeCliente || !dataVenda || !formaPagto || !qtdParcelas) {
                                 Alert.alert('Preencha todos os campos');
                                 return;
                             }
+                            console.log('tttt')
 
                             // Salvar cliente 
                             salvarCliente().then((resultado) => {

@@ -13,7 +13,7 @@ data30Dias.setHours(23, 59, 59);
 
 const dataAtual = new Date();
 dataAtual.setDate(dataAtual.getDate() - 10);
-dataAtual.setHours(0,0,0);
+dataAtual.setHours(0, 0, 0);
 
 export default ({ navigation }) => {
     const [dataInicioFiltro, setDataInicioFiltro] = useState(dataAtual);
@@ -21,6 +21,8 @@ export default ({ navigation }) => {
     const [nomeClienteBuscado, setNomeClienteBuscado] = useState("");
     const [listaVendas, setListaVendas] = useState([]);
     const [valorTotalRetornado, setValorTotalRetornado] = useState(0);
+    const [showDatePickerInicio, setShowDatePickerInicio] = useState(false);
+    const [showDatePickerFim, setShowDatePickerFim] = useState(false);
 
     const { urlApi } = useContext(Context);
 
@@ -29,7 +31,7 @@ export default ({ navigation }) => {
     }, []);
 
     useEffect(() => {
-        
+
         if (!listaVendas || listaVendas.length == 0) {
             setValorTotalRetornado(0);
             return;
@@ -52,6 +54,8 @@ export default ({ navigation }) => {
         if (dataFim) urlParams.push(`dataFim=${dataFim}`);
         if (nomeCliente) urlParams.push(`nomeCliente=${nomeCliente}`);
 
+// console.log(`request: ${baseUrl + urlParams}`);
+        
         fetch(baseUrl + urlParams.join("&"))
             .then(result => result.json())
             .then((result) => {
@@ -81,14 +85,44 @@ export default ({ navigation }) => {
                         ...stylesListaVenda.container,
                         width: '100%'
                     }}>
-                        <DateTimePicker mode='date'
-                            value={dataInicioFiltro}
-                            onChange={(ev) => setDataInicioFiltro(new Date(ev.nativeEvent.timestamp))} />
+                        <TextInput
+                            placeholder='Data Inicio'
+                            showSoftInputOnFocus={false}
+                            style={{ fontSize: 17 }}
+                            onPressIn={() => {
+                                setShowDatePickerInicio(true);
+                            }}>
+                            {`${dataInicioFiltro.getDate().toString().padStart(2, '0')}/${(dataInicioFiltro.getMonth() + 1).toString().padStart(2, '0')}/${dataInicioFiltro.getFullYear()}`}</TextInput>
 
-                        <DateTimePicker mode='date'
-                            style={{ marginLeft: 50 }}
-                            value={dataFimFiltro}
-                            onChange={(ev) => setDataFimFiltro(new Date(ev.nativeEvent.timestamp))} />
+                        {showDatePickerInicio &&
+                            (<DateTimePicker mode='date'
+                                value={dataInicioFiltro}
+                                onChange={(ev) => {
+                                    setDataInicioFiltro(new Date(ev.nativeEvent.timestamp))
+                                    setShowDatePickerInicio(false);
+                                }
+                                } />)
+                        }
+
+                        <TextInput
+                        showSoftInputOnFocus={false}
+                            placeholder='Data Fim'
+                            style={{ fontSize: 17, marginLeft: 80 }}
+                            onPressIn={() => {
+                                setShowDatePickerFim(true);
+                            }}>
+                            {`${dataFimFiltro.getDate().toString().padStart(2, '0')}/${(dataFimFiltro.getMonth() + 1).toString().padStart(2, '0')}/${dataFimFiltro.getFullYear()}`}</TextInput>
+
+                        {showDatePickerFim &&
+                            (<DateTimePicker mode='date'
+                                style={{ marginLeft: 50 }}
+                                value={dataFimFiltro}
+                                onChange={(ev) => {
+                                    setDataFimFiltro(new Date(ev.nativeEvent.timestamp))
+                                    setShowDatePickerFim(false);
+                                }
+                                } />)
+                        }
                     </View>
 
                     <View style={{
@@ -116,14 +150,14 @@ export default ({ navigation }) => {
 
                             getVendas(dataInicioDia.getTime(), dataFimDia.getTime(), nomeClienteBuscado)
                         }}
-                         />
+                    />
 
                     <View style={{
                         ...stylesListaVenda.container,
                         flexDirection: 'column'
                     }}>
                         <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Total: R$ {valorTotalRetornado}</Text>
-                      
+
                     </View>
 
                     <DataTable style={{ marginTop: 30 }}>
@@ -131,7 +165,7 @@ export default ({ navigation }) => {
                             <DataTable.Title style={{ justifyContent: 'center' }}>Data</DataTable.Title>
                             <DataTable.Title style={{ justifyContent: 'center' }}>Cliente</DataTable.Title>
                             <DataTable.Title style={{ justifyContent: 'center' }}>Valor</DataTable.Title>
-                            <DataTable.Title style={{ justifyContent: 'center' }}>Ação</DataTable.Title>
+                            <DataTable.Title style={{ justifyContent: 'center' }}></DataTable.Title>
                         </DataTable.Header>
                         {listaVendas.map((el, i) => {
                             const dataVenda = new Date(parseInt(el.DataVenda));
