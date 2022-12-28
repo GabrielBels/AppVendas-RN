@@ -14,16 +14,15 @@ export default ({ navigation }) => {
                 <Text style={styles.headerTitle}>{empresaNome}</Text>
             </View>
             <View style={styles.container}>
-                <MainButton bgStyle={styles.mainButton} color='white'
-                    title='Consultar Vendas' onPress={() => navigation.navigate('Lista Vendas', { name: 'ListaVendas' })} />
+                <MainButton bgStyle={styles.mainButton} 
+                    title='Consultar Vendas' 
+                    onPress={() => navigation.navigate('Lista Vendas', { name: 'ListaVendas' })} />
             </View>
 
             <View style={{ ...styles.centralized, backgroundColor: 'white' }}>
-                <MainButton bgStyle={styles.bottomButton} color='white'
+                <MainButton bgStyle={styles.bottomButton} 
                     title='Nova Venda'
-                    onPress={() => navigation.navigate('Nova Venda', { name: 'Nova Venda' })}>
-
-                </MainButton>
+                    onPress={() => navigation.navigate('Nova Venda', { name: 'Nova Venda' })}/>
             </View>
             <StatusBar style="auto" />
     </>)

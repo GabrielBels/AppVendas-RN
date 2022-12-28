@@ -1,5 +1,5 @@
 import { View, Text, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, Alert, ScrollView } from 'react-native'
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { SelectList } from 'react-native-dropdown-select-list';
 import NumericInput from 'react-native-numeric-input'
@@ -14,7 +14,9 @@ export default ({ navigation }) => {
     const [formaPagto, setFormaPagto] = useState('');
     const [qtdParcelas, setQtdParcelas] = useState(1);
     const [btnNextPageEnabled, setBtnNextPageEnabled] = useState(false);
+    const [showDatePicker, setShowDatePicker] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+
     const { urlApi } = useContext(Context);
 
     const formasPagto = [
@@ -83,9 +85,22 @@ export default ({ navigation }) => {
                         <Text style={styleNovaVenda.txtLabel}>Data Venda:</Text>
                     </View>
                     <View style={{ ...styleNovaVenda.containerNewVenda, marginTop: 20 }}>
-                        <DateTimePicker mode='date'
-                            value={dataVenda}
-                            onChange={(ev) => setDataVenda(new Date(ev.nativeEvent.timestamp))} />
+                        <TextInput style={styleNovaVenda.txtInput}
+                            placeholder='Data da Venda'
+                            onPressIn={() => {
+                                setShowDatePicker(true);
+                            }}>
+                            {dataVenda.toLocaleDateString("pt-BR")}</TextInput>
+
+                        {showDatePicker && (
+                            <DateTimePicker mode='date'
+                                value={dataVenda}
+                                onChange={(ev) => {
+                                    setDataVenda(new Date(ev.nativeEvent.timestamp))
+                                    setShowDatePicker(false);
+                                    Keyboard.dismiss();
+                                }} />
+                        )}
                     </View>
 
                     <View style={{
@@ -129,7 +144,7 @@ export default ({ navigation }) => {
                 <View style={{ alignItems: 'center', justifyContent: 'flex-end', backgroundColor: 'white', marginTop: 100 }}>
                     <MainButton bgStyle={{
                         ...styleNovaVenda.bottomButton
-                    }} color='white'
+                    }}
                         title='Próxima Página'
                         onPress={() => {
 

@@ -103,7 +103,7 @@ export default ({ route, navigation }) => {
                     </View>
 
                     <View style={styleInsereProdutos.btnSubmit}>
-                        <MainButton bgStyle={styles.mainButton} color='white'
+                        <MainButton bgStyle={styles.mainButton} 
                             title='Adicionar Produto'
                             onPress={() => {
                                 if (!currProdutoNome || !currProdutoValor) {
@@ -128,7 +128,7 @@ export default ({ route, navigation }) => {
                             backgroundColor: 'darkgreen'
                         }}
                             refItem={btnFinalizar}
-                            color='white'
+                            
                             title={`Finalizar (R$ ${valorCarrinho.toLocaleString("pt-BR")})`}
                             onPress={() => {
                                 finalizarVenda().then((resultado) => {
@@ -160,7 +160,7 @@ export default ({ route, navigation }) => {
                                     <DataTable.Cell style={styles.centralized}>
                                         <MainButton onPress={() => {
                                             setListaProdutos(ev => ev.filter((el, i2) => i2 != i));
-                                        }} bgStyle={styleInsereProdutos.btnDeleteProduto} color='white'
+                                        }} bgStyle={styleInsereProdutos.btnDeleteProduto} 
                                             title='Apagar' />
                                     </DataTable.Cell>
                                 </DataTable.Row>

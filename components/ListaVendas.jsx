@@ -116,7 +116,7 @@ export default ({ navigation }) => {
 
                             getVendas(dataInicioDia.getTime(), dataFimDia.getTime(), nomeClienteBuscado)
                         }}
-                        color='white' />
+                         />
 
                     <View style={{
                         ...stylesListaVenda.container,
